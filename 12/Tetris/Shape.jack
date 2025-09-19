@@ -1,0 +1,348 @@
+class Shape {
+    static Shape I, J, L, O, S, T, Z;
+    static Array allShape;
+
+    field Array rtt;
+    field int type;
+
+    constructor Shape new(int atype, Array artt){
+        let rtt = artt;
+        let type = atype;
+        return this;
+    }
+
+    method void dispose(){
+        do rtt.dispose();
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    // 0: r0, 1: rr, 2: r2, 3: rl
+    method Array getRotated(int cnt){
+        return rtt[cnt];
+    }
+
+    method int getType(){
+        return type;
+    }
+
+    method int startRowOnPlyGrd(){
+        if (type = ShapeType.I()){
+            return 0;
+        }
+        return 1;
+    }
+
+    method int startColOnNxtArea(){
+        if (type = ShapeType.I()){
+            return 1;
+        }
+        return 2;
+    }
+
+
+    function void init(){
+        do Shape.initI();
+        do Shape.initJ();
+        do Shape.initL();
+        do Shape.initO();
+        do Shape.initS();
+        do Shape.initT();
+        do Shape.initZ();
+        let allShape = Array.new(7);
+        let allShape[0] = I;
+        let allShape[1] = J;
+        let allShape[2] = L;
+        let allShape[3] = O;
+        let allShape[4] = S;
+        let allShape[5] = T;
+        let allShape[6] = Z;
+        return;
+    }
+
+    // https://harddrop.com/wiki/File:SRS-true-rotations.png
+    function void initI(){
+        var Array rt, r0, rr, r2, rl;
+        let rt = Array.new(4);
+        let r0 = Array.new(4);
+        let rr = Array.new(4);
+        let r2 = Array.new(4);
+        let rl = Array.new(4);
+        let rt[0] = r0;
+        let rt[1] = rr;
+        let rt[2] = r2;
+        let rt[3] = rl;
+
+        let r0[0] = Coordinate.new(0, 0);
+        let r0[1] = Coordinate.new(0, -1);
+        let r0[2] = Coordinate.new(0, 1);
+        let r0[3] = Coordinate.new(0, 2);
+
+        let rr[0] = Coordinate.new(0, 0);
+        let rr[1] = Coordinate.new(-1, 0);
+        let rr[2] = Coordinate.new(1, 0);
+        let rr[3] = Coordinate.new(2, 0);
+
+        let r2[0] = Coordinate.new(0, 0);
+        let r2[1] = Coordinate.new(0, -2);
+        let r2[2] = Coordinate.new(0, -1);
+        let r2[3] = Coordinate.new(0, 1);
+
+        let rl[0] = Coordinate.new(0, 0);
+        let rl[1] = Coordinate.new(-2, 0);
+        let rl[2] = Coordinate.new(-1, 0);
+        let rl[3] = Coordinate.new(1, 0);
+
+        let I = Shape.new(ShapeType.I(), rt);
+        return;
+    }
+
+    function void initJ(){
+        var Array rt, r0, rr, r2, rl;
+        let rt = Array.new(4);
+        let r0 = Array.new(4);
+        let rr = Array.new(4);
+        let r2 = Array.new(4);
+        let rl = Array.new(4);
+        let rt[0] = r0;
+        let rt[1] = rr;
+        let rt[2] = r2;
+        let rt[3] = rl;
+
+        let r0[0] = Coordinate.new(0, 0);
+        let r0[1] = Coordinate.new(-1, -1);
+        let r0[2] = Coordinate.new(0, -1);
+        let r0[3] = Coordinate.new(0, 1);
+
+        let rr[0] = Coordinate.new(0, 0);
+        let rr[1] = Coordinate.new(-1, 0);
+        let rr[2] = Coordinate.new(-1, 1);
+        let rr[3] = Coordinate.new(1, 0);
+
+        let r2[0] = Coordinate.new(0, 0);
+        let r2[1] = Coordinate.new(0, -1);
+        let r2[2] = Coordinate.new(0, 1);
+        let r2[3] = Coordinate.new(1, 1);
+
+        let rl[0] = Coordinate.new(0, 0);
+        let rl[1] = Coordinate.new(1, -1);
+        let rl[2] = Coordinate.new(1, 0);
+        let rl[3] = Coordinate.new(-1, 0);
+
+        let J = Shape.new(ShapeType.J(), rt);
+        return;
+    }
+
+    function void initL(){
+        var Array rt, r0, rr, r2, rl;
+        let rt = Array.new(4);
+        let r0 = Array.new(4);
+        let rr = Array.new(4);
+        let r2 = Array.new(4);
+        let rl = Array.new(4);
+        let rt[0] = r0;
+        let rt[1] = rr;
+        let rt[2] = r2;
+        let rt[3] = rl;
+
+        let r0[0] = Coordinate.new(0, 0);
+        let r0[1] = Coordinate.new(0, -1);
+        let r0[2] = Coordinate.new(0, 1);
+        let r0[3] = Coordinate.new(-1, 1);
+
+        let rr[0] = Coordinate.new(0, 0);
+        let rr[1] = Coordinate.new(-1, 0);
+        let rr[2] = Coordinate.new(1, 0);
+        let rr[3] = Coordinate.new(1, 1);
+
+        let r2[0] = Coordinate.new(0, 0);
+        let r2[1] = Coordinate.new(0, -1);
+        let r2[2] = Coordinate.new(0, 1);
+        let r2[3] = Coordinate.new(1, -1);
+
+        let rl[0] = Coordinate.new(0, 0);
+        let rl[1] = Coordinate.new(-1, -1);
+        let rl[2] = Coordinate.new(-1, 0);
+        let rl[3] = Coordinate.new(1, 0);
+
+        let L = Shape.new(ShapeType.L(), rt);
+        return;
+    }
+
+    function void initO(){
+        var Array rt, r0, rr, r2, rl;
+        let rt = Array.new(4);
+        let r0 = Array.new(4);
+        let rr = Array.new(4);
+        let r2 = Array.new(4);
+        let rl = Array.new(4);
+        let rt[0] = r0;
+        let rt[1] = rr;
+        let rt[2] = r2;
+        let rt[3] = rl;
+
+        let r0[0] = Coordinate.new(0, 0);
+        let r0[1] = Coordinate.new(-1, 0);
+        let r0[2] = Coordinate.new(-1, 1);
+        let r0[3] = Coordinate.new(0, 1);
+
+        let rr[0] = Coordinate.new(0, 0);
+        let rr[1] = Coordinate.new(-1, 0);
+        let rr[2] = Coordinate.new(-1, 1);
+        let rr[3] = Coordinate.new(0, 1);
+
+        let r2[0] = Coordinate.new(0, 0);
+        let r2[1] = Coordinate.new(-1, 0);
+        let r2[2] = Coordinate.new(-1, 1);
+        let r2[3] = Coordinate.new(0, 1);
+
+        let rl[0] = Coordinate.new(0, 0);
+        let rl[1] = Coordinate.new(-1, 0);
+        let rl[2] = Coordinate.new(-1, 1);
+        let rl[3] = Coordinate.new(0, 1);
+
+        let O = Shape.new(ShapeType.O(), rt);
+        return;
+    }
+
+    function void initS(){
+        var Array rt, r0, rr, r2, rl;
+        let rt = Array.new(4);
+        let r0 = Array.new(4);
+        let rr = Array.new(4);
+        let r2 = Array.new(4);
+        let rl = Array.new(4);
+        let rt[0] = r0;
+        let rt[1] = rr;
+        let rt[2] = r2;
+        let rt[3] = rl;
+
+        let r0[0] = Coordinate.new(0, 0);
+        let r0[1] = Coordinate.new(0, -1);
+        let r0[2] = Coordinate.new(-1, 0);
+        let r0[3] = Coordinate.new(-1, 1);
+
+        let rr[0] = Coordinate.new(0, 0);
+        let rr[1] = Coordinate.new(-1, 0);
+        let rr[2] = Coordinate.new(0, 1);
+        let rr[3] = Coordinate.new(1, 1);
+
+        let r2[0] = Coordinate.new(0, 0);
+        let r2[1] = Coordinate.new(1, -1);
+        let r2[2] = Coordinate.new(1, 0);
+        let r2[3] = Coordinate.new(0, 1);
+
+        let rl[0] = Coordinate.new(0, 0);
+        let rl[1] = Coordinate.new(-1, -1);
+        let rl[2] = Coordinate.new(0, -1);
+        let rl[3] = Coordinate.new(1, 0);
+
+        let S = Shape.new(ShapeType.S(), rt);
+        return;
+    }
+
+    function void initT(){
+        var Array rt, r0, rr, r2, rl;
+        let rt = Array.new(4);
+        let r0 = Array.new(4);
+        let rr = Array.new(4);
+        let r2 = Array.new(4);
+        let rl = Array.new(4);
+        let rt[0] = r0;
+        let rt[1] = rr;
+        let rt[2] = r2;
+        let rt[3] = rl;
+
+        let r0[0] = Coordinate.new(0, 0);
+        let r0[1] = Coordinate.new(0, -1);
+        let r0[2] = Coordinate.new(0, 1);
+        let r0[3] = Coordinate.new(-1, 0);
+
+        let rr[0] = Coordinate.new(0, 0);
+        let rr[1] = Coordinate.new(-1, 0);
+        let rr[2] = Coordinate.new(1, 0);
+        let rr[3] = Coordinate.new(0, 1);
+
+        let r2[0] = Coordinate.new(0, 0);
+        let r2[1] = Coordinate.new(0, -1);
+        let r2[2] = Coordinate.new(0, 1);
+        let r2[3] = Coordinate.new(1, 0);
+
+        let rl[0] = Coordinate.new(0, 0);
+        let rl[1] = Coordinate.new(0, -1);
+        let rl[2] = Coordinate.new(-1, 0);
+        let rl[3] = Coordinate.new(1, 0);
+
+        let T = Shape.new(ShapeType.T(), rt);
+        return;
+    }
+
+
+    function void initZ(){
+        var Array rt, r0, rr, r2, rl;
+        let rt = Array.new(4);
+        let r0 = Array.new(4);
+        let rr = Array.new(4);
+        let r2 = Array.new(4);
+        let rl = Array.new(4);
+        let rt[0] = r0;
+        let rt[1] = rr;
+        let rt[2] = r2;
+        let rt[3] = rl;
+
+        let r0[0] = Coordinate.new(0, 0);
+        let r0[1] = Coordinate.new(-1, -1);
+        let r0[2] = Coordinate.new(-1, 0);
+        let r0[3] = Coordinate.new(0, 1);
+
+        let rr[0] = Coordinate.new(0, 0);
+        let rr[1] = Coordinate.new(-1, 1);
+        let rr[2] = Coordinate.new(0, 1);
+        let rr[3] = Coordinate.new(1, 0);
+
+        let r2[0] = Coordinate.new(0, 0);
+        let r2[1] = Coordinate.new(0, -1);
+        let r2[2] = Coordinate.new(1, 0);
+        let r2[3] = Coordinate.new(1, 1);
+
+        let rl[0] = Coordinate.new(0, 0);
+        let rl[1] = Coordinate.new(-1, 0);
+        let rl[2] = Coordinate.new(0, -1);
+        let rl[3] = Coordinate.new(1, -1);
+
+        let Z = Shape.new(ShapeType.Z(), rt);
+        return;
+    }
+
+    function Shape getI(){
+        return I;
+    }
+
+    function Shape getJ(){
+        return J;
+    }
+
+    function Shape getL(){
+        return L;
+    }
+
+    function Shape getO(){
+        return O;
+    }
+
+    function Shape getS(){
+        return S;
+    }
+
+    function Shape getT(){
+        return T;
+    }
+
+    function Shape getZ(){
+        return Z;
+    }
+
+    function Array getAllShape(){
+        return allShape;
+    }
+}

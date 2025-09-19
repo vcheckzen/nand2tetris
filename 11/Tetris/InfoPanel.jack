@@ -1,0 +1,92 @@
+class InfoPanel {
+    static Shape lastShape;
+    // These strings will be used many times, creating it once to prevent memory leak.
+    static String clearLine;
+
+    function void init(){
+        if (clearLine = null){
+            let clearLine = "             ";
+        }
+
+        do Draw.rectangle(Constant.infoPanelTopLeftX(), Constant.infoPanelTopLeftY(), Constant.infoPanelBottomRightX(), Constant.infoPanelBottomRightY(), "Info", true);
+
+        do Output.moveCursor(Convert.y2charRow(Constant.infoPanelTopLeftY()) + 1 + InfoPanel.verticalCenterStartRow(), Convert.x2charColumn(Constant.infoPanelTopLeftX()) + 2);
+        do Output.printString("Score");
+        // do Output.moveCursor(Convert.y2charRow(Constant.infoPanelTopLeftY()) + 2 + InfoPanel.verticalCenterStartRow(), Convert.x2charColumn(Constant.infoPanelBottomRightX()) - 1);
+        // do Output.printString("0");
+        // do InfoPanel.updateScore(0);
+        do Output.moveCursor(Convert.y2charRow(Constant.infoPanelTopLeftY()) + 3 + InfoPanel.verticalCenterStartRow(), Convert.x2charColumn(Constant.infoPanelTopLeftX()) + 2);
+        do Output.printString("-------------");
+
+        do Output.moveCursor(Convert.y2charRow(Constant.infoPanelTopLeftY()) + 4 + InfoPanel.verticalCenterStartRow(), Convert.x2charColumn(Constant.infoPanelTopLeftX()) + 2);
+        do Output.printString("Line");
+        // do Output.moveCursor(Convert.y2charRow(Constant.infoPanelTopLeftY()) + 5 + InfoPanel.verticalCenterStartRow(), Convert.x2charColumn(Constant.infoPanelBottomRightX()) - 1);
+        // do Output.printString("0");
+        // do InfoPanel.updateLine(0);
+        do Output.moveCursor(Convert.y2charRow(Constant.infoPanelTopLeftY()) + 6 + InfoPanel.verticalCenterStartRow(), Convert.x2charColumn(Constant.infoPanelTopLeftX()) + 2);
+        do Output.printString("-------------");
+
+        do Output.moveCursor(Convert.y2charRow(Constant.infoPanelTopLeftY()) + 7 + InfoPanel.verticalCenterStartRow(), Convert.x2charColumn(Constant.infoPanelTopLeftX()) + 2);
+        do Output.printString("Level");
+        // do Output.moveCursor(Convert.y2charRow(Constant.infoPanelTopLeftY()) + 8 + InfoPanel.verticalCenterStartRow(), Convert.x2charColumn(Constant.infoPanelBottomRightX()) - 1);
+        // do Output.printString("1");
+        // do InfoPanel.updateLevel(1);
+        do Output.moveCursor(Convert.y2charRow(Constant.infoPanelTopLeftY()) + 9 + InfoPanel.verticalCenterStartRow(), Convert.x2charColumn(Constant.infoPanelTopLeftX()) + 2);
+        do Output.printString("-------------");
+
+        do Output.moveCursor(Convert.y2charRow(Constant.infoPanelTopLeftY()) + 10 + InfoPanel.verticalCenterStartRow(), Convert.x2charColumn(Constant.infoPanelTopLeftX()) + 2);
+        do Output.printString("Next");
+        // do TShape.draw(Convert.x2Word(Constant.infoPanelBottomRightX()) - 4 + ((Convert.y2Square(Convert.charRow2Y(Convert.y2charRow(Constant.infoPanelTopLeftY()) + 11 + InfoPanel.verticalCenterStartRow())) + 1) * Constant.squareEdgeLength() * Constant.screenWidthInWord()));
+        do Output.moveCursor(Convert.y2charRow(Constant.infoPanelTopLeftY()) + 15 + InfoPanel.verticalCenterStartRow(), Convert.x2charColumn(Constant.infoPanelTopLeftX()) + 2);
+        do Output.printString("-------------");
+
+        do InfoPanel.reset();
+        return;
+    }
+
+    function int verticalCenterStartRow(){
+        return (Constant.panelCharRows() - 14) / 2;
+    }
+
+    function void putIntAtRight(int row, int val){
+        do Output.moveCursor(Convert.y2charRow(Constant.infoPanelTopLeftY()) + row, Convert.x2charColumn(Constant.infoPanelTopLeftX()) + 2);
+        do Output.printString(clearLine);
+        do Output.moveCursor(Convert.y2charRow(Constant.infoPanelTopLeftY()) + row, Convert.x2charColumn(Constant.infoPanelBottomRightX()) - Util.intLength(val));
+        do Output.printInt(val);
+        return;
+    }
+
+    function void updateScore(int score){
+        do InfoPanel.putIntAtRight(2 + InfoPanel.verticalCenterStartRow(), score);
+        return;
+    }
+
+    function void updateLine(int line){
+        do InfoPanel.putIntAtRight(5 + InfoPanel.verticalCenterStartRow(), line);
+        return;
+    }
+
+    function void updateLevel(int level){
+        do InfoPanel.putIntAtRight(8 + InfoPanel.verticalCenterStartRow(), level);
+        return;
+    }
+
+    function void updateNext(Shape sp){
+        if (~(lastShape = null)){
+            do Draw.shapeOnNext(lastShape.getRotated(0), 1, lastShape.startColOnNxtArea(), false);
+        }
+        let lastShape = sp;
+        if (~(lastShape = null)){
+            do Draw.shapeOnNext(lastShape.getRotated(0), 1, lastShape.startColOnNxtArea(), true);
+        }
+        return;
+    }
+
+    function void reset(){
+        do InfoPanel.updateScore(0);
+        do InfoPanel.updateLine(0);
+        do InfoPanel.updateLevel(1);
+        do InfoPanel.updateNext(null);
+        return;
+    }
+}

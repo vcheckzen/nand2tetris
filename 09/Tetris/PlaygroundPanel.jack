@@ -1,0 +1,248 @@
+class PlaygroundPanel {
+    static Array grid, frame, buf;
+    /**
+    static Piece lastPiece, lastGhost;
+    static Shape lastPieceShape, lastGhostShape;
+    static int lstPRow, lstPCol, lstGRow, lstGCol;
+    */
+
+    function void init(){
+        do PlaygroundPanel.initArray();
+        do Draw.rectangle(Constant.playgroundPanelTopLeftX(), Constant.playgroundPanelTopLeftY(), Constant.playgroundPanelBottomRightX(), Constant.playgroundPanelBottomRightY(), null, true);
+        do PlaygroundPanel.reset();
+        return;
+    }
+
+    function void initArray(){
+        var Array a;
+        var int r;
+        let a = Array.new(Constant.playgroundPanelVerticalSquares());
+        let r = 0;
+        while (r < Constant.playgroundPanelVerticalSquares()){
+            let a[r] = Array.new(Constant.playgroundPanelHorizontalSquares());
+            let r = r + 1;
+        }
+        let grid = a;
+
+        let a = Array.new(Constant.playgroundPanelVerticalSquares());
+        let r = 0;
+        while (r < Constant.playgroundPanelVerticalSquares()){
+            let a[r] = Array.new(Constant.playgroundPanelHorizontalSquares());
+            let r = r + 1;
+        }
+        let frame = a;
+
+        let a = Array.new(Constant.playgroundPanelVerticalSquares());
+        let r = 0;
+        while (r < Constant.playgroundPanelVerticalSquares()){
+            let a[r] = Array.new(Constant.playgroundPanelHorizontalSquares());
+            let r = r + 1;
+        }
+        let buf = a;
+        return;
+    }
+
+    function void fillArray(Array a, int val){
+        var int r, c;
+        var Array row;
+        let r = 0;
+        while (r < Constant.playgroundPanelVerticalSquares()){
+            let row = a[r];
+            let c = 0;
+            while (c < Constant.playgroundPanelHorizontalSquares()){
+                let row[c] = val;
+                let c = c + 1;
+            }
+            let r = r + 1;
+        }
+        return;
+    }
+
+    function void reset(){
+        do PlaygroundPanel.fillArray(grid, false);
+        do PlaygroundPanel.fillArray(buf, PlaygroundPanel.emptyBufVal());
+
+        do Screen.setColor(false);
+        do Screen.drawRectangle(Constant.playgroundPanelTopLeftX() + Constant.borderWidth(), Constant.playgroundPanelTopLeftY() + Constant.borderWidth(), Constant.playgroundPanelBottomRightX() - Constant.borderWidth(), Constant.playgroundPanelBottomRightY() - Constant.borderWidth());
+        do Screen.setColor(true);
+        return;
+    }
+
+    // -1: true, 0: false, 10: empty, 9: ghost
+    function int emptyBufVal(){
+        return 10;
+    }
+
+    function int ghostFrameVal(){
+        return 9;
+    }
+
+    function boolean getColor(int row, int col){
+        var Array r;
+        let r = grid[row];
+        return r[col];
+    }
+
+    function void setColor(int row, int col, boolean color){
+        var Array r;
+        let r = grid[row];
+        let r[col] = color;
+        return;
+    }
+
+    function void setRow(int row, boolean color){
+        var int c;
+        let c = 0;
+        while (c < Constant.playgroundPanelHorizontalSquares()){
+            do PlaygroundPanel.setColor(row, c, color);
+            let c = c + 1;
+        }
+        return;
+    }
+
+    function void cpRow(int from, int to){
+        var int c;
+        let c = 0;
+        while (c < Constant.playgroundPanelHorizontalSquares()){
+            do PlaygroundPanel.setColor(to, c, PlaygroundPanel.getColor(from, c));
+            let c = c + 1;
+        }
+        return;
+    }
+
+    function void mergePiece2PlyGrd(Piece piece){
+        var Shape shape;
+        var int i, r, c;
+        var Coordinate o;
+        let shape = piece.getRotated();
+        let i = 0;
+        while (i < 4){
+            let o = shape[i];
+            let r = piece.getRow() + o.getX();
+            let c = piece.getCol() + o.getY();
+            do PlaygroundPanel.setColor(r, c, true);
+            let i = i + 1;
+        }
+        return;
+    }
+
+    function boolean allRowIs(int row, boolean color){
+        var int c;
+        let c = 0;
+        while (c < Constant.playgroundPanelHorizontalSquares()){
+            if (~(PlaygroundPanel.getColor(row, c) = color)){
+                return false;
+            }
+            let c = c + 1;
+        }
+        return true;
+    }
+
+    /**
+    function void redraw(){
+        var int r, c;
+        let r = 0;
+        while (r < Constant.playgroundPanelVerticalSquares()){
+            let c = 0;
+            while (c < Constant.playgroundPanelHorizontalSquares()){
+                if (~(PlaygroundPanel.getColor(r, c) = Util.plyGrdRCVal(r, c))){
+                    do Draw.squareOnPlyGrd(r, c, PlaygroundPanel.getColor(r, c));
+                }
+                let c = c + 1;
+            }
+            let r = r + 1;
+        }
+        return;
+    }
+
+    function void dumpPiece(Piece piece, Piece ghost){
+        let lastPiece = piece;
+        let lastGhost = ghost;
+        if (~(piece = null)){
+            let lastPieceShape = piece.getRotated();
+            let lstPRow = piece.getRow();
+            let lstPCol = piece.getCol();
+        }
+        if (~(ghost = null)){
+            let lastGhostShape = ghost.getRotated();
+            let lstGRow = ghost.getRow();
+            let lstGCol = ghost.getCol();
+        }
+        return;
+    }
+
+    function void updatePiece(Piece piece, Piece ghost){
+        if (~(lastPiece = null)){
+            if (lastPiece.getLocked()){
+                do lastPiece.dispose();
+                let lastPiece = null;
+            } else {
+                if (~PlaygroundPanel.getColor(lstPRow, lstPCol)){
+                    do Draw.shapeOnPlyGrd(lastPieceShape, lstPRow, lstPCol, false);
+                }
+            }
+        }
+        if (~(lastGhost = null)){
+            if (~lastGhost.getLocked()){
+                do Draw.ghostShapeOnPlyGrd(lastGhostShape, lstGRow, lstGCol, false);
+            }
+            do lastGhost.dispose();
+            let lastGhost = null;
+        }
+        do PlaygroundPanel.dumpPiece(piece, ghost);
+        if (~(lastPiece = null)){
+            do Draw.shapeOnPlyGrd(lastPieceShape, lstPRow, lstPCol, true);
+        }
+        if (~(lastGhost = null)){
+            if (~lastGhost.getLocked()){
+                do Draw.ghostShapeOnPlyGrd(lastGhostShape, lstGRow, lstGCol, true);
+            }
+        }
+        return;
+    }
+    */
+
+    function void mergePiece2Frame(Piece piece, boolean ghost){
+        var int i;
+        var Array square;
+        var Coordinate o;
+        var Array frow;
+        let square = piece.getRotated();
+        let i = 0;
+        while (i < 4){
+            let o = square[i];
+            let frow = frame[o.getX() + piece.getRow()];
+            if (~frow[o.getY() + piece.getCol()]){
+                if (ghost){
+                    if (~piece.getLocked()){
+                        let frow[o.getY() + piece.getCol()] = PlaygroundPanel.ghostFrameVal();
+                    }
+                } else {
+                    let frow[o.getY() + piece.getCol()] = true;
+                }
+            }
+            let i = i + 1;
+        }
+        return;
+    }
+
+    function void updateFrame(Piece piece, Piece ghost){
+        var int r, c;
+        var Array grow, frow;
+        let r = 0;
+        while (r < Constant.playgroundPanelVerticalSquares()){
+            let grow = grid[r];
+            let frow = frame[r];
+            let c = 0;
+            while (c < Constant.playgroundPanelHorizontalSquares()){
+                let frow[c] = grow[c];
+                let c = c + 1;
+            }
+            let r = r + 1;
+        }
+        do PlaygroundPanel.mergePiece2Frame(piece, false);
+        do PlaygroundPanel.mergePiece2Frame(ghost, true);
+        do Draw.frameOnPlyGrd(frame, buf);
+        return;
+    }
+}

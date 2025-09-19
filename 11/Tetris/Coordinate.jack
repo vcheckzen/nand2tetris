@@ -1,0 +1,38 @@
+class Coordinate {
+    field int x, y;
+
+    constructor Coordinate new(int ax, int ay){
+        let x = ax;
+        let y = ay;
+        return this;
+    }
+
+    method void dispose(){
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    method int getX(){
+        return x;
+    }
+
+    method int getY(){
+        return y;
+    }
+
+    method void setX(int ax){
+        let x = ax;
+        return;
+    }
+
+    method void setY(int ay){
+        let y = ay;
+        return;
+    }
+
+    method void setXY(int ax, int ay){
+        let x = ax;
+        let y = ay;
+        return;
+    }
+}

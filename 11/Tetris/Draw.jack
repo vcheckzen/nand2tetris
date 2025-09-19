@@ -1,0 +1,126 @@
+class Draw {
+    function void rectangle(int x1, int y1, int x2, int y2, String title, boolean color){
+        var String clear;
+        var int i;
+        do Screen.setColor(color);
+        do Screen.drawLine(x1, y1, x1, y2);
+        do Screen.drawLine(x1, y1, x2, y1);
+        do Screen.drawLine(x2, y1, x2, y2);
+        do Screen.drawLine(x1, y2, x2, y2);
+        if (~(title = null)){
+            do Output.moveCursor(Convert.y2charRow(y1) + 1, Convert.x2charColumn((x1 + x2) / 2) + 1 - (title.length() / 2));
+            if (color){
+                do Output.printString(title);
+            } else {
+                let clear = String.new(title.length());
+                let i = 0;
+                while (i < title.length()){
+                    // space
+                    do clear.appendChar(32);
+                    let i = i + 1;
+                }
+                do Output.printString(clear);
+                do clear.dispose();
+            }
+        }
+        return;
+    }
+
+    function void square(int x, int y, boolean color){
+        do Screen.setColor(color);
+        do Screen.drawRectangle(x + Constant.squarePadding(), y + Constant.squarePadding(), x + Constant.squareEdgeLength() - 1 - Constant.squarePadding(), y + Constant.squareEdgeLength() - 1 - Constant.squarePadding());
+        return;
+    }
+
+    /**
+    // col and row is relative to the playground.
+    function void squareOnPlyGrd(int row, int col, boolean color){
+        var Coordinate scrC;
+        let scrC = Coordinate.new(0, 0);
+        do Convert.pGrdRC2ScrPxl(scrC, row, col);
+        do Draw.square(scrC.getX(), scrC.getY(), color);
+        do scrC.dispose();
+        return;
+    }
+
+    // col and row is relative to the playground.
+    function void shapeOnPlyGrd(Array sp, int row, int col, boolean color){
+        var int i;
+        var Coordinate spC, scrC;
+        let scrC = Coordinate.new(0, 0);
+        let i = 0;
+        while (i < 4){
+            let spC = sp[i];
+            do Convert.pGrdRC2ScrPxl(scrC, row + spC.getX(), col + spC.getY());
+            do Draw.square(scrC.getX(), scrC.getY(), color);
+            let i = i + 1;
+        }
+        do scrC.dispose();
+        return;
+    }
+
+    // col and row is relative to the playground.
+    function void ghostShapeOnPlyGrd(Array sp, int row, int col, boolean color){
+        var int i;
+        var Coordinate spC, scrC;
+        let scrC = Coordinate.new(0, 0);
+        let i = 0;
+        while (i < 4){
+            let spC = sp[i];
+            do Convert.pGrdRC2ScrPxl(scrC, row + spC.getX(), col + spC.getY());
+            do Draw.rectangle(scrC.getX() + Constant.squarePadding(), scrC.getY() + Constant.squarePadding(), scrC.getX() + Constant.squareEdgeLength() - Constant.squarePadding() - 1, scrC.getY() + Constant.squareEdgeLength() - Constant.squarePadding() - 1, null, color);
+            let i = i + 1;
+        }
+        do scrC.dispose();
+        return;
+    }
+    */
+
+    // col and row is relative to the next area.
+    function void shapeOnNext(Array sp, int row, int col, boolean color){
+        var int i;
+        var Coordinate spC, scrC;
+        let scrC = Coordinate.new(0, 0);
+        let i = 0;
+        while (i < 4){
+            let spC = sp[i];
+            do Convert.nxtAreaRC2ScrPxl(scrC, row + spC.getX(), col + spC.getY());
+            do Draw.square(scrC.getX(), scrC.getY(), color);
+            let i = i + 1;
+        }
+        do scrC.dispose();
+        return;
+    }
+
+    function void frameOnPlyGrd(Array frame, Array buf){
+        var int r, c;
+        var Array frow, brow;
+        var Coordinate scrC;
+        let scrC = Coordinate.new(0, 0);
+        let r = 0;
+        while (r < Constant.playgroundPanelVerticalSquares()){
+            let frow = frame[r];
+            let brow = buf[r];
+            let c = 0;
+            while (c < Constant.playgroundPanelHorizontalSquares()){
+                if (~(frow[c] = brow[c])){
+                    let brow[c] = frow[c];
+                    do Convert.pGrdRC2ScrPxl(scrC, r, c);
+                    if (frow[c] = PlaygroundPanel.ghostFrameVal()){
+                        // Erase the square belonging to a already cleared piece.
+                        if (Util.plyGrdRCVal(r, c)){
+                            do Draw.square(scrC.getX(), scrC.getY(), false);
+                        }
+                        do Draw.rectangle(scrC.getX() + Constant.squarePadding(), scrC.getY() + Constant.squarePadding(), scrC.getX() + Constant.squareEdgeLength() - Constant.squarePadding() - 1, scrC.getY() + Constant.squareEdgeLength() - Constant.squarePadding() - 1, null, true);
+                    } else {
+                        do Draw.square(scrC.getX(), scrC.getY(), frow[c]);
+                    }
+                }
+                let c = c + 1;
+            }
+            let r = r + 1;
+        }
+        do scrC.dispose();
+        return;
+    }
+}

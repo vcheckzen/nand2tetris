@@ -1,0 +1,85 @@
+class Key {
+    function int none(){
+        return 0;
+    }
+
+    function int p(){
+        return 112;
+    }
+
+    function int q(){
+        return 113;
+    }
+
+    function int r(){
+        return 114;
+    }
+
+    function int P(){
+        return 80;
+    }
+
+    function int Q(){
+        return 81;
+    }
+
+    function int R(){
+        return 82;
+    }
+
+    function int leftArrow(){
+        return 130;
+    }
+
+    function int upArrow(){
+        return 131;
+    }
+
+    function int rightArrow(){
+        return 132;
+    }
+
+    function int downArrow(){
+        return 133;
+    }
+
+    function int space(){
+        return 32;
+    }
+
+    function boolean isP(int key){
+        return (key = Key.p()) | (key = Key.P());
+    }
+
+    function boolean isQ(int key){
+        return (key = Key.q()) | (key = Key.Q());
+    }
+
+    function boolean isR(int key){
+        return (key = Key.r()) | (key = Key.R());
+    }
+
+    function boolean isLeftArrow(int key){
+        return key = Key.leftArrow();
+    }
+
+    function boolean isUpArrow(int key){
+        return key = Key.upArrow();
+    }
+
+    function boolean isRightArrow(int key){
+        return key = Key.rightArrow();
+    }
+
+    function boolean isDownArrow(int key){
+        return key = Key.downArrow();
+    }
+
+    function boolean isNone(int key){
+        return key = Key.none();
+    }
+
+    function boolean isSpace(int key){
+        return key = Key.space();
+    }
+}

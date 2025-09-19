@@ -1,0 +1,105 @@
+class Piece {
+    field Shape shape;
+    field int rid, row, col;
+    field boolean locked;
+
+    constructor Piece new(Shape ashape, int arow, int acol){
+        let shape = ashape;
+        let rid = 0;
+        let row = arow;
+        let col = acol;
+        let locked = false;
+        return this;
+    }
+
+    method void dispose(){
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    method Piece copy(){
+        var Piece cp;
+        let cp = Piece.new(shape, row, col);
+        do cp.setRid(rid);
+        return cp;
+    }
+
+    method Shape getShape(){
+        return shape;
+    }
+
+    method Array getRotated(){
+        return shape.getRotated(rid);
+    }
+
+    method void setRid(int arid){
+        let rid = arid;
+        return;
+    }
+
+    method int getRow(){
+        return row;
+    }
+
+    method int getCol(){
+        return col;
+    }
+
+    method boolean getLocked(){
+        return locked;
+    }
+
+    method void setLocked(){
+        let locked = true;
+        return;
+    }
+
+    method boolean tryMove(int arid, int arow, int acol){
+        var Array rotated;
+        var int i, mrow, mcol;
+        var Coordinate c;
+        let rotated = shape.getRotated(arid);
+        let i = 0;
+        while (i < 4){
+            let c = rotated[i];
+            let mrow = arow + c.getX();
+            let mcol = acol + c.getY();
+            if (mrow < 0){
+                return false;
+            }
+            if (mcol < 0){
+                return false;
+            }
+            if (mrow > (Constant.playgroundPanelVerticalSquares() - 1)){
+                return false;
+            }
+            if (mcol > (Constant.playgroundPanelHorizontalSquares() - 1)){
+                return false;
+            }
+            if (PlaygroundPanel.getColor(mrow, mcol)){
+                return false;
+            }
+            let i = i + 1;
+        }
+        let rid = arid;
+        let row = arow;
+        let col = acol;
+        return true;
+    }
+
+    method boolean rotate(){
+        return tryMove(Util.remainder(rid + 1, 4), row, col);
+    }
+
+    method boolean left(){
+        return tryMove(rid, row, col - 1);
+    }
+
+    method boolean right(){
+        return tryMove(rid, row, col + 1);
+    }
+
+    method boolean down(){
+        return tryMove(rid, row + 1, col);
+    }
+}

@@ -1,0 +1,300 @@
+class Game {
+    static int sid, score, line, level, timer, operationGap;
+    static boolean running, ending, locking;
+    static Array allSp, interval, scoreUnit;
+    static Piece piece, ghost, next;
+
+    function void init(){
+        let operationGap = 5;
+        do Shape.init();
+        let allSp = Shape.getAllShape();
+        // https://harddrop.com/wiki/Tetris_Worlds
+        let interval = Array.new(15);
+        let interval[0] = 1000;
+        let interval[1] = 793;
+        let interval[2] = 617;
+        let interval[3] = 472;
+        let interval[4] = 355;
+        let interval[5] = 262;
+        let interval[6] = 189;
+        let interval[7] = 134;
+        let interval[8] = 93;
+        let interval[9] = 64;
+        let interval[10] = 42;
+        let interval[11] = 28;
+        let interval[12] = 18;
+        let interval[13] = 11;
+        let interval[14] = 7;
+        let scoreUnit = Array.new(5);
+        let scoreUnit[0] = 0;
+        let scoreUnit[1] = 1;
+        let scoreUnit[2] = 3;
+        let scoreUnit[3] = 5;
+        let scoreUnit[4] = 8;
+        do Game.reset();
+        do Game.run();
+        return;
+    }
+
+    function void reset(){
+        do PlaygroundPanel.reset();
+        do InfoPanel.reset();
+        let sid = 0;
+        let score = 0;
+        let line = 0;
+        do Game.levelUp();
+        let timer = 0;
+        let ending = false;
+        let locking = false;
+        do Game.generatePiece();
+        let running = true;
+        return;
+    }
+
+    function void over(){
+        if (~(next = null)){
+            do next.dispose();
+            let next = null;
+        }
+        let running = false;
+        let ending = true;
+        // Let playground dispose the last piece.
+        // do PlaygroundPanel.updatePiece(null, null);
+        do PlaygroundPanel.reset();
+        do Util.centeredText("Game Over!");
+        return;
+    }
+
+    function void generatePiece(){
+        var Shape sp;
+        let sp = allSp[sid];
+        if (next = null){
+            let next = Piece.new(sp, sp.startRowOnPlyGrd(), 4);
+        }
+        let piece = next;
+        if (~piece.tryMove(0, piece.getRow(), piece.getCol())){
+            do Game.over();
+            return;
+        }
+
+        let sid = Util.remainder(sid + 1, 7);
+        let sp = allSp[sid];
+        let next = Piece.new(sp, sp.startRowOnPlyGrd(), 4);
+        do InfoPanel.updateNext(sp);
+        return;
+    }
+
+    function void lock(){
+        let locking = false;
+        do piece.setLocked();
+        do PlaygroundPanel.mergePiece2PlyGrd(piece);
+        do Game.clear();
+        do Game.generatePiece();
+        return;
+    }
+
+    function void clear(){
+        var Array full, mdown;
+        var int r, c, upmostEmptyLine, fullLine;
+        let full = Array.new(Constant.playgroundPanelVerticalSquares());
+        let mdown = Array.new(Constant.playgroundPanelVerticalSquares());
+        let upmostEmptyLine = -1;
+        let r = Constant.playgroundPanelVerticalSquares() - 1;
+        let fullLine = 0;
+        while (r > -1){
+            if (PlaygroundPanel.allRowIs(r, false)){
+                let upmostEmptyLine = r;
+                let r = -1;
+            } else {
+                let mdown[r] = 0;
+                if (r + 1 < Constant.playgroundPanelVerticalSquares()){
+                    let mdown[r] = mdown[r + 1];
+                }
+                let full[r] = false;
+                if (PlaygroundPanel.allRowIs(r, true)){
+                    let mdown[r] = mdown[r] + 1;
+                    let full[r] = true;
+                    let fullLine = fullLine + 1;
+                }
+                let r = r - 1;
+            }
+        }
+        if (fullLine = 0){
+            do full.dispose();
+            do mdown.dispose();
+            return;
+        }
+
+        let r = Constant.playgroundPanelVerticalSquares() - 1;
+        while (r > upmostEmptyLine){
+            if (~full[r]){
+                if (mdown[r] > 0){
+                    do PlaygroundPanel.cpRow(r, r + mdown[r]);
+                }
+            }
+            let r = r - 1;
+        }
+        do full.dispose();
+        do mdown.dispose();
+
+        let r = upmostEmptyLine + 1;
+        while (r < (upmostEmptyLine + 1 + fullLine)){
+            do PlaygroundPanel.setRow(r, false);
+            let r = r + 1;
+        }
+
+        let line = line + fullLine;
+        let score = score + (scoreUnit[fullLine] * level);
+        do Game.levelUp();
+        // do PlaygroundPanel.redraw();
+        return;
+    }
+
+    function void render(){
+        let ghost = piece.copy();
+        if (~ghost.down()){
+            do ghost.setLocked();
+        }
+        while (ghost.down()){
+        }
+        // do PlaygroundPanel.updatePiece(piece, ghost);
+        do PlaygroundPanel.updateFrame(piece, ghost);
+        do ghost.dispose();
+        return;
+    }
+
+    function void advance(){
+        if (~running){
+            return;
+        }
+
+        // if (Util.remainder(timer, 50 / operationGap - 1) = 0){
+        //     do Game.render();
+        // }
+        do Game.render();
+        if (Util.remainder(timer, interval[level - 1] / operationGap) = 0){
+            if (~piece.down()){
+                if (~locking){
+                    let locking = true;
+                } else {
+                    do Game.lock();
+                }
+            }
+        }
+        do Game.ticktock();
+        return;
+    }
+
+    function void rotate(){
+        do piece.rotate();
+        return;
+    }
+
+    function void left(){
+        do piece.left();
+        return;
+    }
+
+    function void right(){
+        do piece.right();
+        return;
+    }
+
+    function void down(){
+        do piece.down();
+        let score = score + 1;
+        do InfoPanel.updateScore(score);
+        return;
+    }
+
+    function void drop(){
+        while (piece.down()){
+            let score = score + 2;
+        }
+        do InfoPanel.updateScore(score);
+        // do Game.render();
+        do Game.lock();
+        return;
+    }
+
+    function void levelUp(){
+        var int newL;
+
+        do InfoPanel.updateScore(score);
+        do InfoPanel.updateLine(line);
+
+        let newL = (line / 10) + 1;
+        if (~(newL = level)){
+            let level = newL;
+            if (level > 15){
+                let level = 15;
+            }
+            do InfoPanel.updateLevel(level);
+        }
+        return;
+    }
+
+    function void ticktock(){
+        let timer = Util.remainder(timer + 1, interval[level - 1]);
+        do Sys.wait(operationGap);
+        return;
+    }
+
+    function void run(){
+        var char key;
+        var boolean exit;
+        let key = 0;
+        let exit = false;
+
+        while (~exit){
+            // waits for a key to be pressed
+            while (Key.isNone(key)){
+                let key = Keyboard.keyPressed();
+                do Game.advance();
+            }
+            if (Key.isQ(key)){
+                let exit = true;
+            }
+
+            if (running){
+                if (Key.isP(key)){
+                    let running = false;
+                }
+                if (Key.isUpArrow(key)){
+                    do Game.rotate();
+                }
+                if (Key.isLeftArrow(key)){
+                    do Game.left();
+                }
+                if (Key.isRightArrow(key)){
+                    do Game.right();
+                }
+                if (Key.isDownArrow(key)){
+                    do Game.down();
+                }
+                if (Key.isSpace(key)){
+                    do Game.drop();
+                }
+
+            } else {
+                if ((~ending) & Key.isP(key)){
+                    let running = true;
+                }
+                if (Key.isR(key)){
+                    do Game.reset();
+                }
+            }
+
+            // waits for the key to be released
+            while (~(key = 0)){
+                let key = Keyboard.keyPressed();
+                do Game.advance();
+            }
+        }
+
+        do Screen.clearScreen();
+        do Util.centeredText("Bye!");
+
+        return;
+    }
+}

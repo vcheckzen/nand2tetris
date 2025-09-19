@@ -1,0 +1,36 @@
+class Util {
+    function int intLength(int val){
+        var int l;
+        let l = 1;
+        if (val < 0){
+            let l = 2;
+            let val = -val;
+        }
+        while (val > 9){
+            let val = val / 10;
+            let l = l + 1;
+        }
+        return l;
+    }
+
+    function int remainder(int x, int y){
+        return x - ((x / y) * y);
+    }
+
+    function boolean plyGrdRCVal(int row, int col){
+        var boolean ret;
+        var Coordinate o;
+        let o = Coordinate.new(0, 0);
+        do Convert.pGrdRC2ScrPxl(o, row, col);
+        let ret = ~(Memory.peek(Convert.scrPxl2RamWord(o.getX() + Constant.squarePadding(), o.getY() + Constant.squarePadding())) = 0);
+        do o.dispose();
+        return ret;
+    }
+
+    function void centeredText(String text){
+        do Output.moveCursor(Constant.screenHeightInChar() / 2, (Constant.screenWidthInChar() - text.length()) / 2);
+        do Output.printString(text);
+        do text.dispose();
+        return;
+    }
+}

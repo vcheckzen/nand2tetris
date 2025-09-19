@@ -1,0 +1,60 @@
+class Convert {
+    function int x2charColumn(int x){
+        return x / Constant.charWidth();
+    }
+
+    function int y2charRow(int y){
+        return y / Constant.charHeight();
+    }
+
+    function int charRow2Y(int r){
+        return r * Constant.charHeight();
+    }
+
+    function int x2Word(int x){
+        return x / Constant.wordLength();
+    }
+
+    function int y2Square(int y){
+        return y / Constant.squareEdgeLength();
+    }
+
+    function int xAlign2CharColumn(int x){
+        return x / Constant.charWidth() * Constant.charWidth();
+    }
+
+    function int yAlign2CharRow(int y){
+        return y / Constant.charHeight() * Constant.charHeight();
+    }
+
+    function int align2Square(int x){
+        return x / Constant.squareEdgeLength() * Constant.squareEdgeLength();
+    }
+
+    function void pGrdFstSqrScrPxl(Coordinate dst){
+        do dst.setXY(Constant.playgroundPanelTopLeftX() + Constant.panelPadding() + 1, Constant.playgroundPanelTopLeftY() + Constant.panelPadding() + 1);
+        return;
+    }
+
+    function void pGrdRC2ScrPxl(Coordinate dst, int row, int col){
+        do Convert.pGrdFstSqrScrPxl(dst);
+        do dst.setXY(dst.getX() + (col * Constant.squareEdgeLength()), dst.getY() + (row * Constant.squareEdgeLength()));
+        return;
+    }
+
+    function int scrPxl2RamWord(int x, int y){
+        return Constant.screenStartRamWord() + (x / Constant.wordLength()) + (y * Constant.screenWidthInWord());
+    }
+
+    function void nxtAreaFstSqrScrPxl(Coordinate dst){
+        do dst.setXY(Convert.xAlign2CharColumn(Constant.infoPanelBottomRightX()) - 1 - (4 * Constant.squareEdgeLength()), Convert.charRow2Y(Convert.y2charRow(Constant.infoPanelTopLeftY()) + 11 + InfoPanel.verticalCenterStartRow()) + 10);
+        return;
+    }
+
+    // 2 rows and 4 cols
+    function void nxtAreaRC2ScrPxl(Coordinate dst, int row, int col){
+        do Convert.nxtAreaFstSqrScrPxl(dst);
+        do dst.setXY(dst.getX() + (col * Constant.squareEdgeLength()), dst.getY() + (row * Constant.squareEdgeLength()));
+        return;
+    }
+}

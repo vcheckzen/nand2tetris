@@ -1,0 +1,121 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/12/Memory.jack
+/**
+ * This library provides two services: direct access to the computer's main
+ * memory (RAM), and allocation and recycling of memory blocks. The Hack RAM
+ * consists of 32,768 words, each holding a 16-bit binary number.
+ */ 
+class Memory {
+
+    static Array memory;
+    static int heapBase;
+    static int heapSize;
+    static int freeList;
+
+    /** Initializes the class. */
+    function void init() {
+        let memory = 0;
+        let heapBase = 2048;
+        // Figure 5.6 on page 137
+        let heapSize = 14336;
+        let freeList = heapBase;
+        let memory[freeList] = heapSize;
+        let memory[freeList + 1] = 0;
+        return;
+    }
+
+    /** Returns the RAM value at the given address. */
+    function int peek(int address) {
+        return memory[address];
+    }
+
+    /** Sets the RAM value at the given address to the given value. */
+    function void poke(int address, int value) {
+        let memory[address] = value;
+        return;
+    }
+
+    /** Finds an available RAM block of the given size and returns
+     *  a reference to its base address. */
+    function int alloc(int size) {
+        var int bestPrev, best, bestSize, prev, cur, temp;
+
+        let bestPrev = 0;
+        let best = 0;
+        let bestSize = heapSize + 1;
+        let prev = 0;
+        let cur = freeList;
+
+        while (~(cur = 0)) {
+            // >= size + 1, i.e. > size
+            if ((memory[cur] > size) & (memory[cur] < bestSize)) {
+                let bestPrev = prev;
+                let best = cur;
+                let bestSize = memory[cur];
+            }
+            let prev = cur;
+            let cur = memory[cur + 1];
+        }
+        if (best = 0) {
+            return -1;
+        }
+        
+        // return the whole best
+        if (bestSize - (size + 1) < 2) {
+            if (bestPrev = 0) {
+                let freeList = memory[best + 1];
+            } else {
+                let memory[bestPrev + 1] = memory[best + 1];
+            }
+            return best + 1;
+        }
+
+        // carve size + 1 words from best
+        let memory[best] = bestSize - (size + 1);
+        let temp = memory[best] + best;
+        let memory[temp] = size + 1;
+        return temp + 1;
+    }
+
+    /** De-allocates the given object (cast as an array) by making
+     *  it available for future allocations. */
+    function void deAlloc(Array o) {
+        var int prev, cur;
+
+        let prev = 0;
+        let cur = freeList;
+        while (~(cur = 0) & (o - 1 > cur)) {
+            let prev = cur;
+            let cur = memory[cur + 1];
+        }
+
+        if (prev = 0) {
+            let memory[o] = freeList;
+            let freeList = o - 1;
+
+            // defragmentation
+            if (freeList + memory[freeList] = cur) {
+                let memory[freeList] = memory[freeList] + memory[cur];
+                let memory[freeList + 1] = memory[cur + 1];
+            }
+        } else {
+            let memory[prev + 1] = o - 1;
+            let memory[o] = cur;
+
+            // defragmentation
+            if (prev + memory[prev] = (o - 1)) {
+                let memory[prev] = memory[prev] + memory[o - 1];
+                let memory[prev + 1] = cur;
+                let o = prev + 1;
+            }
+            if (o - 1 + memory[o - 1] = cur) {
+                let memory[o - 1] = memory[o - 1] + memory[cur];
+                let memory[o] = memory[cur + 1];
+            }
+        }
+
+        return;
+    }
+}

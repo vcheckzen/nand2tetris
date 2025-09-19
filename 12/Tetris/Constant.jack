@@ -1,0 +1,158 @@
+class Constant {
+    function boolean dumpLayoutInfo(){
+        return true;
+    }
+
+    function boolean displaySignature(){
+        return true;
+    }
+
+    function int screenWidth(){
+        return 512;
+    }
+
+    function int screenHeight(){
+        return 256;
+    }
+
+    function int screenStartRamWord(){
+        return 16384;
+    }
+
+    function int wordLength(){
+        return 16;
+    }
+
+    function int screenWidthInWord(){
+        return Constant.screenWidth() / Constant.wordLength();
+    }
+
+    function int charHeight(){
+        return 11;
+    }
+
+    function int charWidth(){
+        return 8;
+    }
+
+    function int screenWidthInChar(){
+        return Constant.screenWidth() / Constant.charWidth();
+    }
+
+    function int screenHeightInChar(){
+        return Constant.screenHeight() / Constant.charHeight();
+    }
+
+    function int borderWidth(){
+        return 1;
+    }
+
+    function int panelPadding(){
+        return 2;
+    }
+
+    function int squareEdgeLength(){
+        return 12;
+    }
+
+    function int squarePadding(){
+        return 1;
+    }
+
+    function int playgroundPanelHorizontalSquares(){
+        return 10;
+    }
+
+    function int playgroundPanelVerticalSquares(){
+        return 20;
+    }
+
+    function int panelBorderPaddingWidth(){
+        return Constant.borderWidth() + Constant.panelPadding();
+    }
+
+    function int panelDoubleBorderPaddingWidth(){
+        return Constant.panelBorderPaddingWidth() * 2;
+    }
+
+    function int panelHeight(){
+        return Constant.playgroundPanelVerticalSquares() * Constant.squareEdgeLength() + Constant.panelDoubleBorderPaddingWidth();
+    }
+
+    function int panelCharRows(){
+        return (Constant.panelHeight() - Constant.panelDoubleBorderPaddingWidth()) / Constant.charHeight();
+    }
+
+    function int panelVerticalMargin(){
+        return (Constant.screenHeight() - Constant.panelHeight()) / 2;
+    }
+
+    function int helpPanelCharCols(){
+        return 13;
+    }
+
+    function int helpPanelWidth(){
+        // ~Not need the right padding because the last char already has such one.~
+        return Constant.helpPanelCharCols() * Constant.charWidth() + Constant.panelDoubleBorderPaddingWidth();// - Constant.panelPadding();
+    }
+
+    function int helpPanelTopLeftX(){
+        return Convert.xAlign2CharColumn(80) - Constant.panelBorderPaddingWidth();
+    }
+
+    function int helpPanelTopLeftY(){
+        return Constant.panelVerticalMargin() - Constant.borderWidth();
+    }
+
+    function int helpPanelBottomRightX(){
+        return Constant.helpPanelTopLeftX() + Constant.helpPanelWidth() - Constant.borderWidth();
+    }
+
+    function int helpPanelBottomRightY(){
+        return Constant.helpPanelTopLeftY() + Constant.panelHeight() - Constant.borderWidth();
+    }
+
+    function int playgroundPanelWidth(){
+        return Constant.playgroundPanelHorizontalSquares() * Constant.squareEdgeLength() + Constant.panelDoubleBorderPaddingWidth();
+    }
+
+    function int playgroundPanelTopLeftX(){
+        return Convert.align2Square(Constant.helpPanelBottomRightX() + Constant.squareEdgeLength()) - Constant.panelBorderPaddingWidth();
+    }
+
+    function int playgroundPanelTopLeftY(){
+        return Constant.panelVerticalMargin() - Constant.borderWidth();
+    }
+
+    function int playgroundPanelBottomRightX(){
+        return Constant.playgroundPanelTopLeftX() + Constant.playgroundPanelWidth() - Constant.borderWidth();
+    }
+
+    function int playgroundPanelBottomRightY(){
+        return Constant.playgroundPanelTopLeftY() + Constant.panelHeight() - Constant.borderWidth();
+    }
+
+    function int infoPanelTopLeftX(){
+        return Constant.playgroundPanelBottomRightX() + (Constant.playgroundPanelTopLeftX() - Constant.helpPanelBottomRightX());
+    }
+
+    function int infoPanelTopLeftY(){
+        return Constant.panelVerticalMargin() - Constant.borderWidth();
+    }
+
+    function int infoPanelBottomRightX(){
+        return Constant.screenWidth() - Constant.helpPanelTopLeftX() + 1;
+    }
+
+    function int infoPanelBottomRightY(){
+        return Constant.infoPanelTopLeftY() + Constant.panelHeight() - Constant.borderWidth();
+    }
+
+    function int infoPanelWidth(){
+        return Constant.infoPanelBottomRightX() - Constant.infoPanelTopLeftX() + 1;
+    }
+
+    function int infoPanelCharCols(){
+        return (Constant.infoPanelWidth() - Constant.panelDoubleBorderPaddingWidth()) / Constant.charWidth();
+    }
+}

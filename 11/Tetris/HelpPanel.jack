@@ -1,0 +1,32 @@
+class HelpPanel {
+    function void init(){
+        var Array action;
+        var int n, i;
+        let n = 15;
+        let action = Array.new(n);
+        let action[00] = "Quit         ";
+        let action[01] = "          <Q>";
+        let action[02] = "-------------";
+        let action[03] = "Reset        ";
+        let action[04] = "          <R>";
+        let action[05] = "-------------";
+        let action[06] = "Pause        ";
+        let action[07] = "          <P>";
+        let action[08] = "-------------";
+        let action[09] = "RttCW   <UAr>";
+        let action[10] = "MoveL   <LAr>";
+        let action[11] = "MoveR   <RAr>";
+        let action[12] = "MoveD   <DAr>";
+        let action[13] = "DropD   <Spc>";
+        let action[14] = "-------------";
+        do Draw.rectangle(Constant.helpPanelTopLeftX(), Constant.helpPanelTopLeftY(), Constant.helpPanelBottomRightX(), Constant.helpPanelBottomRightY(), "Help", true);
+        let i = 0;
+        while (i < n){
+            do Output.moveCursor(Convert.y2charRow(Constant.helpPanelTopLeftY()) + ((Constant.panelCharRows() - (n - 1)) / 2) + 1 + (i), Convert.x2charColumn(Constant.helpPanelTopLeftX() + Constant.panelBorderPaddingWidth()));
+            do Output.printString(action[i]);
+            let i = i + 1;
+        }
+        do action.dispose();
+        return;
+    }
+}

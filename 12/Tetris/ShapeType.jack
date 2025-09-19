@@ -1,0 +1,29 @@
+class ShapeType {
+    function int I(){
+        return 1;
+    }
+
+    function int J(){
+        return 2;
+    }
+
+    function int L(){
+        return 3;
+    }
+
+    function int O(){
+        return 4;
+    }
+
+    function int S(){
+        return 5;
+    }
+
+    function int T(){
+        return 6;
+    }
+
+    function int Z(){
+        return 7;
+    }
+}

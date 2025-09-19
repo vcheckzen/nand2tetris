@@ -1,0 +1,87 @@
+class System {
+    function void dump(){
+        if (Constant.dumpLayoutInfo()){
+            do Output.println();
+            do Output.printString("LyInfo:");
+            do Output.println();
+
+            do Output.printString("HelpPn:");
+            do Output.println();
+
+            do Output.printString("(x1,y1):");
+            do Output.println();
+            do Output.printString("(");
+            do Output.printInt(Constant.helpPanelTopLeftX());
+            do Output.printString(",");
+            do Output.printInt(Constant.helpPanelTopLeftY());
+            do Output.printString(")");
+            do Output.println();
+
+            do Output.printString("(x2,y2):");
+            do Output.println();
+            do Output.printString("(");
+            do Output.printInt(Constant.helpPanelBottomRightX());
+            do Output.printString(",");
+            do Output.printInt(Constant.helpPanelBottomRightY());
+            do Output.printString(")");
+            do Output.println();
+            do Output.println();
+
+            do Output.printString("PlyGrdPn:");
+            do Output.println();
+
+            do Output.printString("(x1,y1):");
+            do Output.println();
+            do Output.printString("(");
+            do Output.printInt(Constant.playgroundPanelTopLeftX());
+            do Output.printString(",");
+            do Output.printInt(Constant.playgroundPanelTopLeftY());
+            do Output.printString(")");
+            do Output.println();
+
+            do Output.printString("(x2,y2):");
+            do Output.println();
+            do Output.printString("(");
+            do Output.printInt(Constant.playgroundPanelBottomRightX());
+            do Output.printString(",");
+            do Output.printInt(Constant.playgroundPanelBottomRightY());
+            do Output.printString(")");
+            do Output.println();
+            do Output.println();
+
+            do Output.printString("InfoPn:");
+            do Output.println();
+
+            do Output.printString("(x1,y1):");
+            do Output.println();
+            do Output.printString("(");
+            do Output.printInt(Constant.infoPanelTopLeftX());
+            do Output.printString(",");
+            do Output.printInt(Constant.infoPanelTopLeftY());
+            do Output.printString(")");
+            do Output.println();
+
+            do Output.printString("(x2,y2):");
+            do Output.println();
+            do Output.printString("(");
+            do Output.printInt(Constant.infoPanelBottomRightX());
+            do Output.printString(",");
+            do Output.printInt(Constant.infoPanelBottomRightY());
+            do Output.printString(")");
+            do Output.println();
+
+            do Output.printString("chrCols:");
+            do Output.println();
+            do Output.printInt(Constant.infoPanelCharCols());
+            do Output.println();
+        }
+
+        if (Constant.displaySignature()){
+            do Output.moveCursor(Convert.y2charRow(Constant.screenHeight() - 1) - 2, Convert.x2charColumn(Constant.screenWidth() - 1) - 4);
+            do Output.printString("@LOGI");
+            do Output.moveCursor(Convert.y2charRow(Constant.screenHeight() - 1) - 1, Convert.x2charColumn(Constant.screenWidth() - 1) - 5);
+            do Output.printString("2025/8");
+        }
+        return;
+    }
+}

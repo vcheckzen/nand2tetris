@@ -1,0 +1,13 @@
+{
+  "files.exclude": {
+    // "**/*.tst": true,
+    // "**/*.cmp": true,
+    // "**/*.hack": true,
+    "09/**/*.vm": true,
+    "**/__pycache__": true,
+  },
+  "editor.renderWhitespace": "all",
+  "files.associations": {
+    "*.asm": "asm"
+  }
+}

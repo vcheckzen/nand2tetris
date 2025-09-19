@@ -1,0 +1,11 @@
+class Main {
+    function void main(){
+    
+        do System.dump();
+        do HelpPanel.init();
+        do PlaygroundPanel.init();
+        do InfoPanel.init();
+        do Game.init();
+        return;
+    }
+}
